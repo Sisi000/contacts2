@@ -115,4 +115,7 @@ public class ContactHome {
     }
 
 
+    public void remove(Contact contact) {
+        contacts.remove(contact);
+    }
 }

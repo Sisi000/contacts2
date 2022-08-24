@@ -155,4 +155,9 @@ public class Contact {
                 ", primaryAddress='" + primaryAddress + '\'' +
                 '}';
     }
+
+    public void remove(ContactHome contacts) {
+        contacts.remove(this);
+
+    }
 }

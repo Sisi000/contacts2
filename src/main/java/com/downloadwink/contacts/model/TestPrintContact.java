@@ -8,28 +8,31 @@ public class TestPrintContact {
         ContactHome contacts = ContactHome.getInstance();
         BirthDay birthDate = BirthDay.getInstance();
 
-        //All contacts
-        List<Contact> allContacts = contacts.allContacts();
-        System.out.println("All contacts: ");
-        if (allContacts.size() > 0) {
-            for (Contact e : allContacts) {
-                System.out.println(e);
+//        //All contacts
+//        List<Contact> allContacts = contacts.allContacts();
+//        System.out.println("All contacts: ");
+//        if (allContacts.size() > 0) {
+//            for (Contact e : allContacts) {
+//                System.out.println(e);
+//            }
+//        } else {
+//            System.out.println("No record found");
+//        }
+
+        //Delete contact
+        System.out.println("Contact deleted");
+        List<Contact> someContacts2 = contacts.findByLastName("Ivansic");
+        if (someContacts2.size() > 0) {
+            for (Contact contact2 : someContacts2) {
+                contact2.remove(contacts);
+                System.out.println(contact2);
+                System.out.println("");
+                System.out.println("New contact list: ");
+                System.out.println(contacts.allContacts());
             }
         } else {
             System.out.println("No record found");
         }
-
-        //Delete contact
-//        boolean found = false;
-//        System.out.println("Enter Last name to delete");
-//        List<Contact> someContacts2 = contacts.findByLastName("ddd");
-//        if (someContacts2.size() > 0) {
-//            for (Contact contact2 : someContacts2) {
-//                System.out.println(contact2);
-////                contact2.remove();
-//            }
-//        }
-
 
         //Find by first name
 //        List<Contact> someContacts = contacts.findByFirstName("Siri");
