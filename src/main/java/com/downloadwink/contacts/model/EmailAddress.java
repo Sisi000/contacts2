@@ -2,10 +2,15 @@ package com.downloadwink.contacts.model;
 
 
 public class EmailAddress {
+    private int id;
     private String email;
 
-    public EmailAddress(String email) {
-        this.email = email;
+    public int getId() {
+        return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {

@@ -1,5 +1,6 @@
 package com.downloadwink.contacts.model;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +12,15 @@ public class ContactHome {
         return ContactHome.instance;
     }
 
+    private Connection connect;
 
     private List<Contact> contacts = new ArrayList<>(); // it will add new to contacts list
 
     private ContactHome() {
-        createInitialContacts();
+
     }
 
-    private void createInitialContacts() {
+    private void createInitialContacts() throws SQLException {
         addContact("Tony", "Enerson", "tony@enerson.ca", "587111111", "20/12/1985", 37, "Tony is a great guy", "Avenue 12", "brother", "wife");
         addContact("Messele", "Ghebreslassie", "messele@gmail.com", "587222222", "15/02/1990", 32, "Messele is a great guy", "Avenue 14", "cousin", "spouse");
         addContact("Sanja", "Ivansic", "sanja@invansic.ca", "587333333", "24/02/1990", 32, "Sanja is a great girl", "Avenue 16", "sister", "partner");
@@ -26,26 +28,63 @@ public class ContactHome {
         addContact("siri", "Google", "siri@google.ca", "587555555", "18/05/1993", 29, "Siri is a second great girls", "Avenue 20", "sister", "husband");
     }
 
-    public void addContact(String firstName, String lastName, String personalEmail, String phoneNumber, String birthDay, int age, String notes, String address, String siblings, String partner) {
-        Contact contact = new Contact();
-        contact.setFirstName(firstName);
-        contact.setLastName(lastName);
-        contact.setPhoneNumber(phoneNumber);
-        EmailAddress emailAddress = new EmailAddress(personalEmail);
-        contact.setPersonalEmail(emailAddress);
-        contact.setWorkEmail(new EmailAddress(""));
-        contact.setBirthDay(birthDay);
-        contact.setAge(age);
-        contact.setNotes(notes);
-        contact.setPrimaryAddress(address);
-        contact.setSiblings(new ArrayList<>());
-        contact.setPartner(new Contact());
+    public void addContact(String firstName, String lastName, String personalEmail, String phoneNumber, String birthDay, int age, String notes, String address, String siblings, String partner) throws SQLException {
+        Connection connect = getConnection();
+        Statement statement = connect.createStatement();
+        statement.execute("INSERT INTO contacts (firstName, lastName) VALUES ('" + firstName + "', '" + lastName + "')");
+    statement.close();
 
-        contacts.add(contact);
+
     }
 
-    public List<Contact> allContacts() {
-        return contacts;
+    public List<Contact> allContacts() throws SQLException {
+        Connection connect = getConnection();
+        Statement statement = connect.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet resultSet = statement
+                .executeQuery("select * from mycontacts.contacts");
+        List<Contact> allContacts = new ArrayList<>();
+        while (resultSet.next()) {
+            Contact contact = new Contact();
+            extractContactFromResultSet(resultSet, contact);
+
+            allContacts.add(contact);
+
+        }
+        statement.close();
+        return allContacts;
+    }
+
+    private void extractContactFromResultSet(ResultSet resultSet, Contact contact) throws SQLException {
+        contact.setId(resultSet.getInt("id"));
+        contact.setFirstName(resultSet.getString("firstName"));
+        contact.setLastName(resultSet.getString("lastName"));
+        int personalEmailId = resultSet.getInt("personalEmailId");
+        if (personalEmailId != 0) {
+            contact.setPersonalEmail(EmailAddressHome.getInstance().findById(personalEmailId));
+        }
+    }
+
+    public Contact findById(int id) throws SQLException, ClassNotFoundException {
+
+        Connection connect = getConnection();
+        Statement statement = connect.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet resultSet = statement
+                .executeQuery("select * from mycontacts.contacts where id = " + id);
+        Contact contact = new Contact();
+        while (resultSet.next()) {
+            extractContactFromResultSet(resultSet, contact);
+        }
+        statement.close();
+        return contact;
+    }
+
+    private Connection getConnection() throws SQLException {
+        if (connect == null) {
+            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/mycontacts", "root", "password");
+        }
+        return connect;
     }
 
     public List<Contact> findByFirstName(String nameFragment) {
@@ -122,5 +161,5 @@ public class ContactHome {
 
     public void addNewContact(Contact contact) {
         contacts.add(contact);
-            }
+    }
 }

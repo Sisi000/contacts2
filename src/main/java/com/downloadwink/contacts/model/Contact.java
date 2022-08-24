@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Contact {
+    private int id;
     private String firstName;
     private String lastName;
     private String phoneNumber;
@@ -26,8 +27,8 @@ public class Contact {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.personalEmail = new EmailAddress("");
-        this.workEmail = new EmailAddress("");
+        this.personalEmail = new EmailAddress();
+        this.workEmail = new EmailAddress();
         this.age = 0;
         this.birthDay = String.valueOf(new Date());
         this.notes = "";
@@ -51,6 +52,13 @@ public class Contact {
     }
 
 
+    public int getId() {
+        return id;
+    }
+
+    protected void setId(int id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -81,7 +89,7 @@ public class Contact {
     }
 
 
-       public void setPersonalEmail(EmailAddress personalEmail) {
+    public void setPersonalEmail(EmailAddress personalEmail) {
         this.personalEmail = personalEmail;
     }
 

@@ -4,9 +4,11 @@ import java.util.List;
 
 public class TestPrintContact {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         ContactHome contacts = ContactHome.getInstance();
         BirthDay birthDate = BirthDay.getInstance();
+        Contact contact = contacts.findById(1);
+        System.out.println(contact);
 
         //All contacts
         List<Contact> allContacts = contacts.allContacts();
@@ -20,18 +22,15 @@ public class TestPrintContact {
         }
 
 //        //Add contact
-//        Contact contact = new Contact("John", "Doe", "1234567890");
-//        contacts.addNewContact(contact);
-//        System.out.println("Added contact: " + contact);
+//        contacts.addContact("Jen", "Morisson", "1234567890", "  ", "  ", 0, null, null, null, null);
+//        System.out.println("Added contact: ");
 //        System.out.println("");
 //        if (contacts.allContacts().size() > 0) {
-//
 //            System.out.println("New contact list: ");
 //            for (Contact e : contacts.allContacts()) {
 //                System.out.println(e);
 //            }
 //        }
-
 
         //Delete contact
 //        System.out.println("Contact deleted");
