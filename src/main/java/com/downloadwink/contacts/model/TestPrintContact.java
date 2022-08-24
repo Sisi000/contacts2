@@ -98,9 +98,5 @@ public class TestPrintContact {
 //            }
 //        }
 
-
-//        System.out.println("All contacts: " + allContacts);
-//        System.out.println("There are " + (someContacts.size() + someContacts2.size() + someContacts3.size() + someContacts4.size()) + " contacts.");
-//        System.out.println(String.format("Found %s contacts ", someContacts.size()+someContacts2.size()));
     }
 }
