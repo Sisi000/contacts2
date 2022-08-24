@@ -20,14 +20,14 @@ public class ContactHome {
     }
 
     private void createInitialContacts() {
-        addContact("Tony", "Enerson", "tony@enerson.ca", "587111111", "20/12/1985", 37, "Tony is a great guy", "Avenue 12");
-        addContact("Messele", "Ghebreslassie", "messele@gmail.com", "587222222", "15/02/1990", 32, "Messele is a great guy", "Avenue 14");
-        addContact("Sanja", "Ivansic", "sanja@invansic.ca", "587333333", "24/02/1990", 32, "Sanja is a great girl", "Avenue 16");
-        addContact("Siri", "Lakku", "siri@lakku.ca", "587444444", "25/07/1991", 31, "Siri is a great girl", "Avenue 18");
-        addContact("siri", "Google", "siri@google.ca", "587555555", "18/05/1993", 29, "Siri is a second great girls", "Avenue 20");
+        addContact("Tony", "Enerson", "tony@enerson.ca", "587111111", "20/12/1985", 37, "Tony is a great guy", "Avenue 12", "brother", "wife");
+        addContact("Messele", "Ghebreslassie", "messele@gmail.com", "587222222", "15/02/1990", 32, "Messele is a great guy", "Avenue 14", "cousin", "spouse");
+        addContact("Sanja", "Ivansic", "sanja@invansic.ca", "587333333", "24/02/1990", 32, "Sanja is a great girl", "Avenue 16", "sister", "partner");
+        addContact("Siri", "Lakku", "siri@lakku.ca", "587444444", "25/07/1991", 31, "Siri is a great girl", "Avenue 18", "cousin", "husband");
+        addContact("siri", "Google", "siri@google.ca", "587555555", "18/05/1993", 29, "Siri is a second great girls", "Avenue 20", "sister", "husband");
     }
 
-    public void addContact(String firstName, String lastName, String personalEmail, String phoneNumber, String birthDay, int age, String notes, String address) {
+    public void addContact(String firstName, String lastName, String personalEmail, String phoneNumber, String birthDay, int age, String notes, String address, String siblings, String partner) {
         Contact contact = new Contact();
         contact.setFirstName(firstName);
         contact.setLastName(lastName);
@@ -38,8 +38,9 @@ public class ContactHome {
         contact.setBirthDay(birthDay);
         contact.setAge(age);
         contact.setNotes(notes);
-//        Address address1 = new Address(address);
         contact.setPrimaryAddress(address);
+        contact.setSiblings(new ArrayList<>());
+        contact.setPartner(new Contact());
 
         contacts.add(contact);
     }
@@ -95,15 +96,17 @@ public class ContactHome {
         }
         return matchingContacts;
     }
+
     public List<Contact> findByBirthDate(String birthDate) {
         List<Contact> matchingContacts = new ArrayList<>();
         for (Contact i : contacts) {
-            if (i.getBirthDay().equals(birthDate) ) {
+            if (i.getBirthDay().equals(birthDate)) {
                 matchingContacts.add(i);
             }
         }
         return matchingContacts;
     }
+
     public List<Contact> findByAge(int age) {
         List<Contact> matchingContacts = new ArrayList<>();
         for (Contact i : contacts) {
@@ -118,4 +121,8 @@ public class ContactHome {
     public void remove(Contact contact) {
         contacts.remove(contact);
     }
+
+    public void addNewContact(Contact contact) {
+        contacts.add(contact);
+            }
 }

@@ -141,6 +141,11 @@ public class Contact {
         this.primaryAddress = primaryAddress;
     }
 
+    public void remove(ContactHome contacts) {
+        contacts.remove(this);
+
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
@@ -153,11 +158,8 @@ public class Contact {
                 ", age=" + age +
                 ", notes='" + notes + '\'' +
                 ", primaryAddress='" + primaryAddress + '\'' +
+                ", siblings=" + siblings +
+                ", partner=" + partner +
                 '}';
-    }
-
-    public void remove(ContactHome contacts) {
-        contacts.remove(this);
-
     }
 }
