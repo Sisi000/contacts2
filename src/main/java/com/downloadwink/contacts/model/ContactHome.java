@@ -1,7 +1,6 @@
 package com.downloadwink.contacts.model;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ContactHome {
@@ -48,7 +47,6 @@ public class ContactHome {
     public List<Contact> allContacts() {
         return contacts;
     }
-
 
     public List<Contact> findByFirstName(String nameFragment) {
         List<Contact> matchingContacts = new ArrayList<Contact>();
