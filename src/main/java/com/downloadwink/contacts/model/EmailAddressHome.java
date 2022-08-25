@@ -1,6 +1,8 @@
 package com.downloadwink.contacts.model;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmailAddressHome {
     private static EmailAddressHome instance = new EmailAddressHome();
@@ -18,6 +20,24 @@ public class EmailAddressHome {
         return connect;
     }
 
+    //All emails
+    public List<EmailAddress> allEmails() throws SQLException {
+        List<EmailAddress> allEmails = new ArrayList<>();
+        String sql = "SELECT * FROM emailaddresses";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                EmailAddress emailAddress = new EmailAddress();
+                emailAddress.setId(resultSet.getInt("id"));
+                emailAddress.setEmail(resultSet.getString("email"));
+                allEmails.add(emailAddress);
+            }
+        }
+        return allEmails;
+    }
+
+    //Add new email
     public EmailAddress addEmail(String email) throws SQLException {
         Connection connect = getConnection();
         Statement statement = connect.createStatement();
@@ -39,6 +59,7 @@ public class EmailAddressHome {
         newEmail.setEmail(resultSet.getString("email"));
     }
 
+    //Find email by id
     public EmailAddress findById(int id) throws SQLException {
 
         Connection connect = getConnection();
@@ -54,5 +75,37 @@ public class EmailAddressHome {
         statement.close();
         return email;
     }
-}
 
+
+    //Edit email
+    public EmailAddress editEmail(int id, String email) throws SQLException {
+        Connection connect = getConnection();
+        Statement statement = connect.createStatement();
+        statement.execute("UPDATE emailaddresses SET email = '" + email + "' WHERE id = " + id);
+        statement.close();
+        ResultSet resultSet = connect.createStatement()
+                .executeQuery("SELECT * FROM emailaddresses where email = '" + email + "'");
+        EmailAddress newEmail = new EmailAddress();
+        while (resultSet.next()) {
+            extractEmailAddressFromResultSet(resultSet, newEmail);
+
+        }
+        return newEmail;
+    }
+    //Delete email
+    public EmailAddress deleteEmail(int id) throws SQLException {
+        Connection connect = getConnection();
+        Statement statement = connect.createStatement();
+        statement.execute("DELETE FROM emailaddresses WHERE id = " + id);
+        statement.close();
+        ResultSet resultSet = connect.createStatement()
+                .executeQuery("SELECT * FROM emailaddresses where id = " + id);
+        EmailAddress email = new EmailAddress();
+        while (resultSet.next()) {
+            extractEmailAddressFromResultSet(resultSet, email);
+
+        }
+        return email;
+    }
+
+}

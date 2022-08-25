@@ -12,31 +12,21 @@ public class ContactHome {
         return ContactHome.instance;
     }
 
-    private Connection connect;
+//    private Connection connect;
 
-    private List<Contact> contacts = new ArrayList<>(); // it will add new to contacts list
+    private List<Contact> contacts = new ArrayList<>();
 
     private ContactHome() {
 
     }
 
-    private void createInitialContacts() throws SQLException {
-        addContact("Tony", "Enerson", "tony@enerson.ca", "587111111", "20/12/1985", 37, "Tony is a great guy", "Avenue 12", "brother", "wife");
-        addContact("Messele", "Ghebreslassie", "messele@gmail.com", "587222222", "15/02/1990", 32, "Messele is a great guy", "Avenue 14", "cousin", "spouse");
-        addContact("Sanja", "Ivansic", "sanja@invansic.ca", "587333333", "24/02/1990", 32, "Sanja is a great girl", "Avenue 16", "sister", "partner");
-        addContact("Siri", "Lakku", "siri@lakku.ca", "587444444", "25/07/1991", 31, "Siri is a great girl", "Avenue 18", "cousin", "husband");
-        addContact("siri", "Google", "siri@google.ca", "587555555", "18/05/1993", 29, "Siri is a second great girls", "Avenue 20", "sister", "husband");
+    private Connection getConnection() throws SQLException {
+        Connection connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/mycontacts", "root", "password");
+
+        return connect;
     }
 
-    public void addContact(String firstName, String lastName, String personalEmail, String phoneNumber, String birthDay, int age, String notes, String address, String siblings, String partner) throws SQLException {
-        Connection connect = getConnection();
-        Statement statement = connect.createStatement();
-        statement.execute("INSERT INTO contacts (firstName, lastName) VALUES ('" + firstName + "', '" + lastName + "')");
-    statement.close();
-
-
-    }
-
+    //All contacts
     public List<Contact> allContacts() throws SQLException {
         Connection connect = getConnection();
         Statement statement = connect.createStatement();
@@ -55,17 +45,67 @@ public class ContactHome {
         return allContacts;
     }
 
-    private void extractContactFromResultSet(ResultSet resultSet, Contact contact) throws SQLException {
-        contact.setId(resultSet.getInt("id"));
-        contact.setFirstName(resultSet.getString("firstName"));
-        contact.setLastName(resultSet.getString("lastName"));
-        int personalEmailId = resultSet.getInt("personalEmailId");
-        if (personalEmailId != 0) {
-            contact.setPersonalEmail(EmailAddressHome.getInstance().findById(personalEmailId));
-        }
+    //Add contacts
+    public Contact addContact(String firstName, String lastName) throws SQLException {
+
+        Connection connect = getConnection();
+        PreparedStatement preparedS = connect.prepareStatement("Insert into mycontacts.contacts (firstName, lastName, phoneNumber, birthDay, age, notes) values (?, ?, ?, ?, ?, ?)");
+        preparedS.setString(1, firstName);
+        preparedS.setString(2, lastName);
+        preparedS.setString(3, null);
+        preparedS.setString(4, null);
+        preparedS.setInt(5, 0);
+        preparedS.setString(6, null);
+        preparedS.executeUpdate();
+        Contact contact = new Contact();
+        contact.setFirstName(firstName);
+        contact.setLastName(lastName);
+        return contact;
     }
 
-    public Contact findById(int id) throws SQLException, ClassNotFoundException {
+    public Contact saveContact(Contact contact) throws SQLException {
+        Connection connect = ContactHome.getInstance().getConnection();
+        PreparedStatement preparedS = connect.prepareStatement("update mycontacts.contacts set firstName = ?, lastName = ?, personalEmailId = ?, phoneNumber = ?, age = ?, notes = ? where id = ?");
+        preparedS.setString(1, contact.getFirstName());
+        preparedS.setString(2, contact.getLastName());
+        preparedS.setInt(3, 0);
+        preparedS.setString(4, contact.getPhoneNumber());
+
+        preparedS.setInt(5, contact.getAge());
+        preparedS.setString(6, contact.getNotes());
+        preparedS.setInt(7, contact.getId());
+        preparedS.executeUpdate();
+        return contact;
+    }
+
+
+    public Contact updateContact(Contact contact, String firstName, String lastName, String primaryEmail, String phoneNumber, int age, String notes) throws SQLException {
+        contact.setFirstName(firstName);
+        contact.setLastName(lastName);
+        EmailAddress newEmail = new EmailAddress();
+        newEmail.setEmail(primaryEmail);
+        contact.setPersonalEmail(newEmail);
+        contact.setPhoneNumber(phoneNumber);
+        contact.setAge(age);
+        contact.setNotes(notes);
+        return saveContact(contact);
+
+
+    }
+
+    //Delete contacts
+    public void deleteContact(Contact contact) throws SQLException {
+        Connection connect = ContactHome.getInstance().getConnection();
+        PreparedStatement preparedS = connect.prepareStatement("delete from mycontacts.contacts where id = ?");
+        preparedS.setInt(1, contact.getId());
+        preparedS.executeUpdate();
+        System.out.println("Contact deleted" + contact.getFirstName() + contact.getLastName());
+
+    }
+
+
+    //Find contact by id
+    public Contact findById(int id) throws SQLException {
 
         Connection connect = getConnection();
         Statement statement = connect.createStatement();
@@ -80,24 +120,33 @@ public class ContactHome {
         return contact;
     }
 
-    private Connection getConnection() throws SQLException {
-        if (connect == null) {
-            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/mycontacts", "root", "password");
+    //Find contact by first name
+    public Contact findByFirstName(String firstName) throws SQLException {
+        Connection connect = getConnection();
+        Statement statement = connect.createStatement();
+        // Result set get the result of the SQL query
+        ResultSet resultSet = statement
+                .executeQuery("select * from mycontacts.contacts where firstName = '" + firstName + "'");
+        Contact contact = new Contact();
+        while (resultSet.next()) {
+            extractContactFromResultSet(resultSet, contact);
+
         }
-        return connect;
+        statement.close();
+        return contact;
     }
 
-    public List<Contact> findByFirstName(String nameFragment) {
-        List<Contact> matchingContacts = new ArrayList<Contact>();
-        for (Contact i : contacts) {
-
-            if (i.getFirstName().equalsIgnoreCase(nameFragment)) {
-                matchingContacts.add(i);
-            }
+    private void extractContactFromResultSet(ResultSet resultSet, Contact contact) throws SQLException {
+        contact.setId(resultSet.getInt("id"));
+        contact.setFirstName(resultSet.getString("firstName"));
+        contact.setLastName(resultSet.getString("lastName"));
+        int personalEmailId = resultSet.getInt("personalEmailId");
+        if (personalEmailId != 0) {
+            contact.setPersonalEmail(EmailAddressHome.getInstance().findById(personalEmailId));
         }
-        return matchingContacts;
     }
 
+    //Find contact by last name
     public List<Contact> findByLastName(String nameFragment) {
         List<Contact> matchingContacts = new ArrayList<Contact>();
         for (Contact i : contacts) {
@@ -113,6 +162,7 @@ public class ContactHome {
         return matchingContacts;
     }
 
+    //Find contact by phone number
     public List<Contact> findByPhoneNumber(String nameFragment) {
         List<Contact> matchingContacts = new ArrayList<Contact>();
         for (Contact i : contacts) {
@@ -124,6 +174,7 @@ public class ContactHome {
         return matchingContacts;
     }
 
+    //Find contact by email address
     public List<Contact> findByEmail(String emailAddress) {
         List<Contact> matchingContacts = new ArrayList<>();
         for (Contact i : contacts) {
@@ -134,6 +185,7 @@ public class ContactHome {
         return matchingContacts;
     }
 
+    //Find contact by birth date
     public List<Contact> findByBirthDate(String birthDate) {
         List<Contact> matchingContacts = new ArrayList<>();
         for (Contact i : contacts) {
@@ -144,6 +196,7 @@ public class ContactHome {
         return matchingContacts;
     }
 
+    //Find contact by age
     public List<Contact> findByAge(int age) {
         List<Contact> matchingContacts = new ArrayList<>();
         for (Contact i : contacts) {
@@ -155,11 +208,6 @@ public class ContactHome {
     }
 
 
-    public void remove(Contact contact) {
-        contacts.remove(contact);
-    }
 
-    public void addNewContact(Contact contact) {
-        contacts.add(contact);
-    }
+
 }

@@ -18,39 +18,6 @@ public class Contact {
     private Contact partner;
     private String primaryAddress;
 
-    public Contact() {
-        this.firstName = "testing first name";
-        this.lastName = "testing last name";
-    }
-
-    public Contact(String firstName, String lastName, String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.personalEmail = new EmailAddress();
-        this.workEmail = new EmailAddress();
-        this.age = 0;
-        this.birthDay = String.valueOf(new Date());
-        this.notes = "";
-        this.siblings = new ArrayList<>();
-        this.partner = new Contact();
-        this.primaryAddress = String.valueOf(new Address("110th st sw", "123"));
-    }
-
-    public Contact(String firstName, String lastName, String phoneNumber, EmailAddress personalEmail, EmailAddress workEmail, Date birthDay, int age, String notes, List<Contact> siblings, Contact partner, Address primaryAddress) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.personalEmail = personalEmail;
-        this.workEmail = workEmail;
-        this.birthDay = String.valueOf(birthDay);
-        this.age = age;
-        this.notes = notes;
-        this.siblings = siblings;
-        this.partner = partner;
-        this.primaryAddress = String.valueOf(primaryAddress);
-    }
-
 
     public int getId() {
         return id;
@@ -149,10 +116,6 @@ public class Contact {
         this.primaryAddress = primaryAddress;
     }
 
-    public void remove(ContactHome contacts) {
-        contacts.remove(this);
-
-    }
 
     @Override
     public String toString() {

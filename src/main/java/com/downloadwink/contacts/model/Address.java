@@ -1,26 +1,20 @@
 package com.downloadwink.contacts.model;
 
 public class Address {
+    private int id;
     private String streetName;
     private String streetNumber;
     private String city;
     private String province;
     private String postalCode;
 
-    public Address(String streetName, String streetNumber) {
-        this.streetName = streetName;
-        this.streetNumber = streetNumber;
-        this.city = "";
-        this.province = "";
-        this.postalCode = "";
+
+    public int getId() {
+        return id;
     }
 
-    public Address(String streetName, String streetNumber, String city, String province, String postalCode) {
-        this.streetName = streetName;
-        this.streetNumber = streetNumber;
-        this.city = city;
-        this.province = province;
-        this.postalCode = postalCode;
+    protected void setId(int id) {
+        this.id = id;
     }
 
     public String getStreetName() {
@@ -66,6 +60,6 @@ public class Address {
 
     @Override
     public String toString() {
-        return String.format("%s %s %s, %s, %s", streetNumber, streetName, city, province, postalCode);
+        return String.format("%s %s %s, %s, %s", id, streetNumber, streetName, city, province, postalCode);
     }
 }
