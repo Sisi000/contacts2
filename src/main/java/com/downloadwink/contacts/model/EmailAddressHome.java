@@ -92,6 +92,7 @@ public class EmailAddressHome {
         }
         return newEmail;
     }
+
     //Delete email
     public EmailAddress deleteEmail(int id) throws SQLException {
         Connection connect = getConnection();

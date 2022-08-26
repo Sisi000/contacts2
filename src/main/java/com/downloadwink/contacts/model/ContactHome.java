@@ -49,13 +49,16 @@ public class ContactHome {
     public Contact addContact(String firstName, String lastName) throws SQLException {
 
         Connection connect = getConnection();
-        PreparedStatement preparedS = connect.prepareStatement("Insert into mycontacts.contacts (firstName, lastName, phoneNumber, birthDay, age, notes) values (?, ?, ?, ?, ?, ?)");
+        PreparedStatement preparedS = connect.prepareStatement("Insert into mycontacts.contacts (firstName, lastName, personalEmail, workEmail, phoneNumber, birthDay, age, notes) values (?, ?, ?, ?, ?, ?)");
         preparedS.setString(1, firstName);
         preparedS.setString(2, lastName);
         preparedS.setString(3, null);
         preparedS.setString(4, null);
-        preparedS.setInt(5, 0);
+        preparedS.setString(5, null);
         preparedS.setString(6, null);
+        preparedS.setString(7, null);
+        preparedS.setInt(8, 0);
+        preparedS.setString(9, null);
         preparedS.executeUpdate();
         Contact contact = new Contact();
         contact.setFirstName(firstName);
@@ -65,27 +68,32 @@ public class ContactHome {
 
     public Contact saveContact(Contact contact) throws SQLException {
         Connection connect = ContactHome.getInstance().getConnection();
-        PreparedStatement preparedS = connect.prepareStatement("update mycontacts.contacts set firstName = ?, lastName = ?, personalEmailId = ?, phoneNumber = ?, age = ?, notes = ? where id = ?");
+        PreparedStatement preparedS = connect.prepareStatement("update mycontacts.contacts set firstName = ?, lastName = ?, personalEmailId = ?, workEmailId = ?, phoneNumber = ?, birthDay = ?, age = ?, notes = ? where id = ?");
         preparedS.setString(1, contact.getFirstName());
         preparedS.setString(2, contact.getLastName());
-        preparedS.setInt(3, 0);
-        preparedS.setString(4, contact.getPhoneNumber());
-
-        preparedS.setInt(5, contact.getAge());
-        preparedS.setString(6, contact.getNotes());
-        preparedS.setInt(7, contact.getId());
+        int pid = contact.getPersonalEmail() != null && contact.getPersonalEmail().getId() != 0 ? contact.getPersonalEmail().getId() : 0;
+        preparedS.setInt(3, pid);
+        int wid = contact.getWorkEmail() != null && contact.getWorkEmail().getId() != 0 ? contact.getWorkEmail().getId() : 0;
+        preparedS.setInt(4, wid);
+        preparedS.setString(5, contact.getPhoneNumber());
+        preparedS.setString(6, contact.getBirthDay());
+        preparedS.setInt(7, contact.getAge());
+        preparedS.setString(8, contact.getNotes());
+        preparedS.setInt(9, contact.getId());
         preparedS.executeUpdate();
         return contact;
     }
 
 
-    public Contact updateContact(Contact contact, String firstName, String lastName, String primaryEmail, String phoneNumber, int age, String notes) throws SQLException {
+    public Contact updateContact(Contact contact, String firstName, String lastName, String primaryEmail, String workEmail, String phoneNumber, String birthDay, int age, String notes) throws SQLException {
         contact.setFirstName(firstName);
         contact.setLastName(lastName);
         EmailAddress newEmail = new EmailAddress();
         newEmail.setEmail(primaryEmail);
         contact.setPersonalEmail(newEmail);
+        contact.setWorkEmail(newEmail);
         contact.setPhoneNumber(phoneNumber);
+        contact.setBirthDay(birthDay);
         contact.setAge(age);
         contact.setNotes(notes);
         return saveContact(contact);
@@ -140,9 +148,18 @@ public class ContactHome {
         contact.setId(resultSet.getInt("id"));
         contact.setFirstName(resultSet.getString("firstName"));
         contact.setLastName(resultSet.getString("lastName"));
+        contact.setPhoneNumber(resultSet.getString("phoneNumber"));
+        contact.setBirthDay(resultSet.getString("birthDay"));
+        contact.setAge(resultSet.getInt("age"));
+        contact.setNotes(resultSet.getString("notes"));
+
         int personalEmailId = resultSet.getInt("personalEmailId");
         if (personalEmailId != 0) {
             contact.setPersonalEmail(EmailAddressHome.getInstance().findById(personalEmailId));
+        }
+        int workEmailId = resultSet.getInt("workEmailId");
+        if (workEmailId != 0) {
+            contact.setWorkEmail(EmailAddressHome.getInstance().findById(workEmailId));
         }
     }
 
