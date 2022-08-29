@@ -1,10 +1,12 @@
 package com.downloadwink.contacts;
 
+import com.downloadwink.contacts.controller.EditContactController;
 import com.downloadwink.contacts.controller.ListContactsController;
 import com.downloadwink.contacts.model.Contact;
 import com.downloadwink.contacts.model.ContactHome;
 import com.downloadwink.contacts.view.EditContactPanel;
 import com.downloadwink.contacts.view.ListContactsPanel;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,8 +22,12 @@ public class App {
         ListContactsPanel listContactsPanel = new ListContactsPanel();
         mainFrame.getContentPane().add(listContactsPanel, BorderLayout.WEST);
 
+
         EditContactPanel editContactPanel = new EditContactPanel();
         mainFrame.getContentPane().add(editContactPanel);
+
+
+
 
         List<Contact> contacts = ContactHome.getInstance().allContacts();
         new ListContactsController(listContactsPanel, editContactPanel, contacts);
@@ -32,5 +38,4 @@ public class App {
 
     }
 }
-//        Contact contact = ContactHome.getInstance().findById(1);
-//        new EditContactController(editContactPanel, contact);
+

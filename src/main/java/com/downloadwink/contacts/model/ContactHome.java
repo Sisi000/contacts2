@@ -16,11 +16,11 @@ public class ContactHome {
 
     private List<Contact> contacts = new ArrayList<>();
 
-    private ContactHome() {
+    public ContactHome() {
 
     }
 
-    private Connection getConnection() throws SQLException {
+    Connection getConnection() throws SQLException {
         Connection connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/mycontacts", "root", "password");
 
         return connect;
@@ -49,16 +49,15 @@ public class ContactHome {
     public Contact addContact(String firstName, String lastName) throws SQLException {
 
         Connection connect = getConnection();
-        PreparedStatement preparedS = connect.prepareStatement("Insert into mycontacts.contacts (firstName, lastName, personalEmail, workEmail, phoneNumber, birthDay, age, notes) values (?, ?, ?, ?, ?, ?)");
+        PreparedStatement preparedS = connect.prepareStatement("Insert into mycontacts.contacts (firstName, lastName) values (?, ?)");
         preparedS.setString(1, firstName);
         preparedS.setString(2, lastName);
-        preparedS.setString(3, null);
-        preparedS.setString(4, null);
-        preparedS.setString(5, null);
-        preparedS.setString(6, null);
-        preparedS.setString(7, null);
-        preparedS.setInt(8, 0);
-        preparedS.setString(9, null);
+//        preparedS.setString(3, null);
+//        preparedS.setString(4, null);
+//        preparedS.setString(5, null);
+//        preparedS.setString(6, null);
+//            preparedS.setInt(7, 0);
+//        preparedS.setString(8, null);
         preparedS.executeUpdate();
         Contact contact = new Contact();
         contact.setFirstName(firstName);
@@ -107,7 +106,8 @@ public class ContactHome {
         PreparedStatement preparedS = connect.prepareStatement("delete from mycontacts.contacts where id = ?");
         preparedS.setInt(1, contact.getId());
         preparedS.executeUpdate();
-        System.out.println("Contact deleted" + contact.getFirstName() + contact.getLastName());
+        System.out.println("Contact deleted" + " " + contact.getFirstName() + " " + contact.getLastName());
+        preparedS.close();
 
     }
 
@@ -223,7 +223,6 @@ public class ContactHome {
         }
         return matchingContacts;
     }
-
 
 
 

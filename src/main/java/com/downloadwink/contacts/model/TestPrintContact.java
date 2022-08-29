@@ -34,7 +34,7 @@ public class TestPrintContact {
 //        }
 
 //        //Add contact
-//        Contact contact = contacts.addContact("SSs", "HH");
+//        Contact contact = contacts.addContact("Sanja", "Ivansic");
 //        System.out.println("Added contact: ");
 //        System.out.println(contact);
 //        System.out.println();
@@ -46,7 +46,7 @@ public class TestPrintContact {
 //            }
 //        }
 
-        //Edit contact
+//        //Edit contact
 //        contacts.updateContact(2);
 //        System.out.println("Edited contact: ");
 //        System.out.println("");

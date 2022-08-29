@@ -76,22 +76,25 @@ public class EmailAddressHome {
         return email;
     }
 
-
-    //Edit email
-    public EmailAddress editEmail(int id, String email) throws SQLException {
-        Connection connect = getConnection();
-        Statement statement = connect.createStatement();
-        statement.execute("UPDATE emailaddresses SET email = '" + email + "' WHERE id = " + id);
-        statement.close();
-        ResultSet resultSet = connect.createStatement()
-                .executeQuery("SELECT * FROM emailaddresses where email = '" + email + "'");
-        EmailAddress newEmail = new EmailAddress();
-        while (resultSet.next()) {
-            extractEmailAddressFromResultSet(resultSet, newEmail);
-
-        }
-        return newEmail;
+    //Save email
+    public EmailAddress saveEmailAddress(EmailAddress emailAddress) throws SQLException {
+        Connection connection = getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement("update mycontacts.emailaddresses set email = ? where id = ?");
+        preparedStatement.setString(1, emailAddress.getEmail());
+        preparedStatement.setInt(2, emailAddress.getId());
+        preparedStatement.executeUpdate();
+        return emailAddress;
     }
+
+    //Update email
+    public EmailAddress saveEmailAddress(EmailAddress emailAddress, String email) throws SQLException {
+        EmailAddress emailToUpdate = findById(emailAddress.getId());
+        emailToUpdate.setEmail(email);
+        System.out.println("Email updated" + emailToUpdate.getEmail());
+
+        return saveEmailAddress(emailAddress);
+    }
+
 
     //Delete email
     public EmailAddress deleteEmail(int id) throws SQLException {

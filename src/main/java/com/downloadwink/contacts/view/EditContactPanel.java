@@ -10,6 +10,7 @@ public class EditContactPanel extends JPanel {
     private final JButton saveButton;
 
     private final JButton deleteButton;
+    private final JButton addButton;
     private final JTextField firstNameField;
     private final JTextField lastNameField;
     private final JTextField personalEmailField;
@@ -25,8 +26,9 @@ public class EditContactPanel extends JPanel {
 
         this.setLayout(new BorderLayout());
         JPanel jPanel = new JPanel();
-        jPanel.setLayout(new GridLayout(0,2));
+        jPanel.setLayout(new GridLayout(0, 2));
         this.add(jPanel, BorderLayout.NORTH);
+
 
         JLabel firstNameLabel = new JLabel();
         firstNameLabel.setText("First Name");
@@ -87,6 +89,10 @@ public class EditContactPanel extends JPanel {
         jPanel.add(notesArea);
 
 
+        addButton = new JButton();
+        addButton.setText("Add");
+        this.add(addButton, BorderLayout.EAST);
+
         saveButton = new JButton();
         saveButton.setText("Save");
         this.add(saveButton, BorderLayout.SOUTH);
@@ -105,6 +111,11 @@ public class EditContactPanel extends JPanel {
     public JButton getDeleteButton() {
         return deleteButton;
     }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
+
     public JTextField getFirstNameField() {
         return firstNameField;
     }
@@ -121,17 +132,21 @@ public class EditContactPanel extends JPanel {
         return workEmailField;
     }
 
-    public JTextField getPhoneField() { return phoneField; }
+    public JTextField getPhoneField() {
+        return phoneField;
+    }
 
-    public JTextField getBirthDayField() { return birthDayField; }
+    public JTextField getBirthDayField() {
+        return birthDayField;
+    }
 
-    public JTextField getAgeField() { return ageField; }
+    public JTextField getAgeField() {
+        return ageField;
+    }
 
-    public JTextArea getNotesField() { return notesArea; }
-
-
-
-
+    public JTextArea getNotesField() {
+        return notesArea;
+    }
 
 
 }
